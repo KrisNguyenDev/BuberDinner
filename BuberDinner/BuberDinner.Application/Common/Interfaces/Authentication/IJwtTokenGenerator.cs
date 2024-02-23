@@ -1,6 +1,7 @@
 ﻿namespace BuberDinner.Application.Common.Interfaces.Authentication
 {
-    internal interface IJwtTokenGenerator
+    public interface IJwtTokenGenerator
     {
+        string GenerateToken(Guid userId, string firstName, string lastName);
     }
 }
