@@ -1,4 +1,5 @@
-﻿using BuberDinner.Application.Common.Interfaces.Authentication;
+﻿using BuberDinner.Application.Common.Errors;
+using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Persistence;
 using BuberDinner.Domain.Entities;
 
@@ -19,7 +20,7 @@ public class AuthenticationService : IAuthenticationService
         // 1. Validate the user exists
         if(_userRepository.GetUserByEmail(email) is not User user)
         {
-            throw new Exception("User with given email doesn't exist exists");
+            throw new DuplicateEmailExeption();
         }
 
         // 2. Validate the password is correct

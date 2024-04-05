@@ -1,11 +1,11 @@
-﻿namespace BuberDinner.Api.Errors;
+﻿namespace BuberDinner.Api.Common.Errors;
 
 #nullable enable
 using System.Diagnostics;
-using global::Microsoft.AspNetCore.Mvc.Infrastructure;
-using global::Microsoft.AspNetCore.Mvc.ModelBinding;
-using global::Microsoft.AspNetCore.Mvc;
-using global::Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 
 public class BuberDInnerProblemDetailsFactory : ProblemDetailsFactory
