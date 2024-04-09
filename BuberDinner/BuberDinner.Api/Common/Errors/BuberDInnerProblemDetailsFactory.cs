@@ -95,7 +95,6 @@ public class BuberDInnerProblemDetailsFactory : ProblemDetailsFactory
 
         _configure?.Invoke(new() { HttpContext = httpContext!, ProblemDetails = problemDetails });
 
-
     }
 }
 

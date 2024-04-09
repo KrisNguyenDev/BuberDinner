@@ -20,7 +20,7 @@ public class AuthenticationService : IAuthenticationService
         // 1. Validate the user exists
         if(_userRepository.GetUserByEmail(email) is not User user)
         {
-            throw new DuplicateEmailExeption();
+            throw new Exception("User with given email & password is not already exists");
         }
 
         // 2. Validate the password is correct
@@ -37,9 +37,9 @@ public class AuthenticationService : IAuthenticationService
     public AuthenticationResult Register(string firstName, string lastName, string email, string password)
     {
         // 1. Validate the user doesn't exist
-        if (_userRepository.GetUserByEmail(email) is not null)
+        if (_userRepository.GetUserByEmail(email) != null)
         {
-            throw new Exception("User with given email already exists");
+            throw new DuplicateEmailExeption();
         }
 
         // 2. Create user (generate unique Id) & Persist to DB
