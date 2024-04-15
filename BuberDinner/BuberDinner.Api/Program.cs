@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddInfrastructure(builder.Configuration);
 
     builder.Services.AddControllers();
-    builder.Services.AddSingleton<ProblemDetailsFactory, BuberDInnerProblemDetailsFactory>();
+    //builder.Services.AddSingleton<ProblemDetailsFactory, BuberDInnerProblemDetailsFactory>();
 }
 
 var app = builder.Build();

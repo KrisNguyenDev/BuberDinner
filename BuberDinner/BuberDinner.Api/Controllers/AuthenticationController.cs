@@ -1,5 +1,6 @@
-using BuberDinner.Application.Services.Authentication;
+﻿using BuberDinner.Application.Services.Authentication;
 using BuberDinner.Contracts.Authentication;
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers;
@@ -18,11 +19,22 @@ public class AuthenticationController : ControllerBase
     [HttpPost("register")]
     public IActionResult Register(RegisterRequest request)
     {
-        var authResult = _authenticationService.Register(request.FirstName, request.LastName, request.Email, request.PassWord);
+        ErrorOr<AuthenticationResult> authResult = _authenticationService.Register(
+            request.FirstName, 
+            request.LastName, 
+            request.Email, 
+            request.PassWord);
 
-        var response = new AuthenticationResponse(authResult.user.Id, authResult.user.FirstName, authResult.user.LastName, authResult.user.Email, authResult.Token);
-
-        return Ok(response);
+        return authResult.Match(
+            authResult => Ok(new AuthenticationResponse(
+                authResult.user.Id,
+                authResult.user.FirstName,
+                authResult.user.LastName,
+                authResult.user.Email,
+                authResult.Token)
+            ),
+            firstError => Problem(statusCode: StatusCodes.Status409Conflict, title: firstError.de)
+        );
     }
 
     [HttpPost("login")]
@@ -30,7 +42,12 @@ public class AuthenticationController : ControllerBase
     {
         var authResult = _authenticationService.login(request.Email, request.PassWord);
 
-        var response = new AuthenticationResponse(authResult.user.Id, authResult.user.FirstName, authResult.user.LastName, authResult.user.Email, authResult.Token);
+        var response = new AuthenticationResponse(
+            authResult.user.Id, 
+            authResult.user.FirstName, 
+            authResult.user.LastName, 
+            authResult.user.Email, 
+            authResult.Token);
 
         return Ok(response);
     }

@@ -92,7 +92,6 @@ public class BuberDInnerProblemDetailsFactory : ProblemDetailsFactory
         {
             problemDetails.Extensions["traceId"] = traceId;
         }
-
         _configure?.Invoke(new() { HttpContext = httpContext!, ProblemDetails = problemDetails });
 
     }

@@ -1,7 +1,9 @@
-﻿using BuberDinner.Application.Common.Errors;
-using BuberDinner.Application.Common.Interfaces.Authentication;
+﻿using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Persistence;
+using BuberDinner.Domain.Common.Errors;
 using BuberDinner.Domain.Entities;
+using ErrorOr;
+using FluentResults;
 
 namespace BuberDinner.Application.Services.Authentication;
 
@@ -17,32 +19,31 @@ public class AuthenticationService : IAuthenticationService
     }
     public AuthenticationResult login(string email, string password)
     {
-        // 1. Validate the user exists
-        if(_userRepository.GetUserByEmail(email) is not User user)
+        // 1. Kiểm tra email đúng ko
+        if (_userRepository.GetUserByEmail(email) is not User user)
         {
-            throw new Exception("User with given email & password is not already exists");
+            throw new Exception("Tài khoản không tồn tại.");
+        }
+        // 2. Kiểm tra password ko
+        if (user.Password != password)
+        {
+            throw new Exception("Mật khẩu sai.");
         }
 
-        // 2. Validate the password is correct
-        if(user.Password != password)
-        {
-            throw new Exception("Invalid password");
-        }
-
-        // 3. Create JWT token
+        // 3. Tạo JWT token
         var token = _jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(user, token);
     }
 
-    public AuthenticationResult Register(string firstName, string lastName, string email, string password)
+    public ErrorOr<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
     {
-        // 1. Validate the user doesn't exist
-        if (_userRepository.GetUserByEmail(email) != null)
+        // 1. Kiểm tra tài khoản không tồn tại
+        if (_userRepository.GetUserByEmail(email) is null)
         {
-            throw new DuplicateEmailExeption();
+            return Errors.User.DuplicateEmail;
         }
 
-        // 2. Create user (generate unique Id) & Persist to DB
+        // 2. Tạo user
         var user = new User
         {
             FirstName = firstName,
@@ -52,7 +53,7 @@ public class AuthenticationService : IAuthenticationService
         };
         _userRepository.Add(user);
 
-        // 3. Create  JWT token
+        // 3. Tạo  JWT token
         var token = _jwtTokenGenerator.GenerateToken(user);
         return new AuthenticationResult(user, token);
     }
